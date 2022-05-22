@@ -1,0 +1,47 @@
+{
+  "name": "@ibrahimdeniz/chess-js",
+  "description": "Javascript chess library for chess rules and chess ai.",
+  "version": "0.1.0",
+  "author": {
+    "name": "İbrahim Deniz",
+    "email": "dnzibrahim1@gmail.com"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "chessboard",
+    "chess",
+    "vue",
+    "vuejs",
+    "chess-ai"
+  ],
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/umd.js",
+  "module": "./dist/es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/es.js",
+      "require": "./dist/umd.js"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ibrahimdenizz/chess-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ibrahimdenizz/chess-js/issues"
+  },
+  "homepage": "https://github.com/ibrahimdenizz/chess-js/tree/main#readme",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "sass": "^1.51.0",
+    "vite": "^2.9.7"
+  }
+}
