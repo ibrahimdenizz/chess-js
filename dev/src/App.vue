@@ -49,7 +49,8 @@
 </template>
 
 <script>
-import { ChessBoard, ChessAI, ChessGame } from "@ibrahimdeniz/vue-chessboard";
+import { ChessBoard } from "@ibrahimdeniz/vue-chessboard";
+import { ChessAI, ChessGame } from "@ibrahimdeniz/chess-js";
 import "@ibrahimdeniz/vue-chessboard/dist/style.css";
 
 const ratio = 0.8;
@@ -64,7 +65,7 @@ export default {
       fen: "",
       game,
       randomAI: new ChessAI({ type: "random" }),
-      normalAI: new ChessAI({ type: "normal", depth: 4 }),
+      normalAI: new ChessAI({ type: "normal", depth: 3 }),
       winner: null,
       gameType: "normal-ai",
       isPlayTwoAI: false,
@@ -86,7 +87,7 @@ export default {
       this.chessBoardSize = width > height ? height * ratio : width * ratio;
     },
     onMovePlayed({ move, game }) {
-      console.log(game.moves);
+      console.log(move);
       game.makeMove(move);
       if (this.gameType !== "two-player") this.makeAiMove(game);
     },
@@ -115,11 +116,9 @@ export default {
     },
     undoMove() {
       this.game.undoMove();
-      console.log(this.game.redoHistory);
     },
     redoMove() {
       this.game.redoMove();
-      console.log(this.game.redoHistory);
     },
     async playTwoAI() {
       this.isPlayTwoAI = true;

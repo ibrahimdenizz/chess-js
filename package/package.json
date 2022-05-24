@@ -37,11 +37,11 @@
   },
   "homepage": "https://github.com/ibrahimdenizz/chess-js/tree/main#readme",
   "scripts": {
+    "start": "node src/index.js",
     "dev": "vite",
     "build": "vite build"
   },
   "devDependencies": {
-    "sass": "^1.51.0",
     "vite": "^2.9.7"
   }
 }

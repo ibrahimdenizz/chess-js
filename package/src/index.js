@@ -1,4 +1,4 @@
-import ChessGame from "./chessGame";
-import ChessAI from "./chessAI";
+import ChessGame from "./chessGame.js";
+import ChessAI from "./chessAI.js";
 
 export { ChessGame, ChessAI };

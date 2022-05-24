@@ -38,6 +38,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ibrahimdeniz/chess-js@file:../package::locator=dev%40workspace%3A.":
+  version: 0.1.0
+  resolution: "@ibrahimdeniz/chess-js@file:../package#../package::hash=d73b7e&locator=dev%40workspace%3A."
+  checksum: c8137088d12b2ec9de5760b9df7cc653c4bb3d6441da4d3e8fcbe9ee6564cb70f2f39cd71716c2e87dbd0fe36533d1230e652d9ca8dfbb9cb89000bb2cda419c
+  languageName: node
+  linkType: hard
+
 "@ibrahimdeniz/vue-chessboard@npm:^0.1.5":
   version: 0.1.5
   resolution: "@ibrahimdeniz/vue-chessboard@npm:0.1.5"
@@ -428,6 +435,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "dev@workspace:."
   dependencies:
+    "@ibrahimdeniz/chess-js": "file:../package"
     "@ibrahimdeniz/vue-chessboard": ^0.1.5
     "@vitejs/plugin-vue": ^2.3.3
     sass: ^1.52.1

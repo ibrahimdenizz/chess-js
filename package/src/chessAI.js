@@ -9,9 +9,9 @@ import {
   SQUARE_WEIGHT_TABLES,
   pieceCode,
   DEFAULT_FEN,
-} from "@/constants/chess";
-import ChessGame from "./chessGame";
-import { TranspositionTable } from "./transpositionTable";
+} from "./constants/chess.js";
+import ChessGame from "./chessGame.js";
+import { TranspositionTable } from "./transpositionTable.js";
 
 export default class ChessAI {
   positionCount = 0;
@@ -20,7 +20,7 @@ export default class ChessAI {
   transpositionNum = 0;
   bestEval = null;
 
-  constructor({ type = "normal", depth = 1 }) {
+  constructor(type = "normal", depth = 1) {
     this.type = type;
     this.depth = depth;
     this.transpositionTable = new TranspositionTable(this.game);
@@ -30,7 +30,7 @@ export default class ChessAI {
   selectMove(fen, options) {
     const type = options?.type || this.type;
     const depth = options?.depth || this.depth;
-    console.log(depth);
+
     if (fen) this.game = new ChessGame(fen);
     else return null;
 
@@ -49,6 +49,7 @@ export default class ChessAI {
 
       if (options?.debug) this.logDebug();
 
+      this.bestMove.setSAN(this.game.uglyMoves);
       return this.bestMove.pretty;
     }
   }

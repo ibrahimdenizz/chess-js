@@ -4,7 +4,7 @@ import {
   Q_SIDE_CASTLE,
   rookSides,
   WHITE,
-} from "@/constants/chess";
+} from "./constants/chess.js";
 
 const randomNumberMultiply = 100000000000000000;
 

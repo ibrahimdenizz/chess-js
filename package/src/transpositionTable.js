@@ -1,4 +1,4 @@
-import { TT_EXACT, TT_LOWER, TT_UPPER } from "@/constants/chess";
+import { TT_EXACT, TT_LOWER, TT_UPPER } from "./constants/chess.js";
 
 export class TranspositionTable {
   hashes = {};

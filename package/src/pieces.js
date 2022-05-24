@@ -1,4 +1,4 @@
-import { pieceCode, pieceCodeToName, WHITE } from "@/constants/chess";
+import { pieceCode, pieceCodeToName, WHITE } from "./constants/chess.js";
 
 class Piece {
   index = 0;

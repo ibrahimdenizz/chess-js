@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ibrahimdeniz/chess-js": "file:../package",
     "@ibrahimdeniz/vue-chessboard": "^0.1.5",
     "sass": "^1.52.1",
     "vue": "^3.2.25"

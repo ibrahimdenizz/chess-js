@@ -12,6 +12,14 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ibrahimdeniz/chess-js@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@ibrahimdeniz/chess-js@workspace:."
+  dependencies:
+    vite: ^2.9.7
+  languageName: unknown
+  linkType: soft
+
 "@npmcli/fs@npm:^2.1.0":
   version: 2.1.0
   resolution: "@npmcli/fs@npm:2.1.0"
@@ -151,14 +159,6 @@ __metadata:
   checksum: ddfcf92f079f24ccecef4e2ca1e4428443787b61429b921803b020fd0f33d9ac829ac47837b74b40868d8ae4f1b2ed82e164cdaa5508fbd790eee005a9d88469
   languageName: node
   linkType: hard
-
-"chessjs@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "chessjs@workspace:."
-  dependencies:
-    vite: ^2.9.9
-  languageName: unknown
-  linkType: soft
 
 "chownr@npm:^2.0.0":
   version: 2.0.0
@@ -1197,7 +1197,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^2.9.9":
+"vite@npm:^2.9.7":
   version: 2.9.9
   resolution: "vite@npm:2.9.9"
   dependencies:

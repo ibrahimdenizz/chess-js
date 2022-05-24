@@ -1,6 +1,6 @@
-import { BLACK, DEFAULT_FEN, pieceCode, WHITE } from "@/constants/chess";
-import PieceList from "./pieceList";
-import Piece from "./pieces";
+import { BLACK, DEFAULT_FEN, pieceCode, WHITE } from "./constants/chess.js";
+import PieceList from "./pieceList.js";
+import Piece from "./pieces.js";
 
 export default class Board {
   squares = Array(64).fill(null);

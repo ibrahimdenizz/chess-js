@@ -956,7 +956,7 @@ class Move {
     };
   }
   indexToString(index) {
-    return "" + RANKS[index % 8] + (parseInt(index / 8) + 1);
+    return "" + RANKS[index % 8] + (8 - parseInt(index / 8));
   }
   get startPosition() {
     return this.indexToPosition(this.startIndex);
@@ -996,7 +996,6 @@ class Move {
   getSanConflict(moves) {
     let conflict = "";
     const startPosition = this.startPosition;
-    this.targetPosition;
     let sameRank = false, sameFile = false;
     for (const move of moves) {
       if (move.piece.type === this.piece.type && move.startIndex !== this.startIndex && move.targetIndex === this.targetIndex) {
@@ -1011,7 +1010,7 @@ class Move {
     if (sameFile)
       conflict += RANKS[startPosition.x];
     if (sameRank)
-      conflict += startPosition.y + 1;
+      conflict += 8 - startPosition.y;
     return conflict;
   }
   setSAN(moves) {
@@ -1031,9 +1030,7 @@ class Move {
         }
         this.san += "x";
       }
-      const targetPosition = this.targetPosition;
-      this.san += RANKS[targetPosition.x];
-      this.san += targetPosition.y + 1;
+      this.san += this.targetString;
       if (this.promotion)
         this.san += "=" + this.promotion.toUpperCase();
     }
@@ -1373,11 +1370,11 @@ class ChessGame {
     else
       this.halfMoveCount++;
   }
-  makeMove(move) {
+  convertToMove(move) {
     let uglyMove;
-    if (move instanceof Move)
+    if ((move == null ? void 0 : move.startIndex) && (move == null ? void 0 : move.targetIndex))
       uglyMove = move;
-    else if (typeof move === "string" || (move == null ? void 0 : move.san)) {
+    else if (typeof move === "string") {
       uglyMove = this.uglyMoves.find((_uglyMove) => _uglyMove.san === move);
     } else {
       uglyMove = this.uglyMoves.find((_uglyMove) => {
@@ -1389,9 +1386,18 @@ class ChessGame {
         }
       });
     }
-    this.makeUglyMove(uglyMove);
+    return uglyMove;
+  }
+  validateMove(move) {
+    return !!this.convertToMove(move);
+  }
+  makeMove(move) {
+    if (!this.validateMove(move))
+      return false;
+    this.makeUglyMove(this.convertToMove(move));
     this.redoHistory = [];
     this.buildMoves();
+    return true;
   }
   undoUglyMove() {
     if (this.history.length > 0) {
@@ -1576,7 +1582,7 @@ class ChessGame {
   getOpponentColor(color) {
     return color === WHITE ? BLACK : WHITE;
   }
-  get board64Arr() {
+  get boardArray() {
     return this.board.squares;
   }
   get opponentColor() {
@@ -1595,14 +1601,18 @@ class ChessGame {
   }
   get winner() {
     if (this.gameOver) {
-      if (this.inCheck()) {
+      if (this.inCheck() && this.uglyMoves.length === 0) {
         return this.currentPlayer === WHITE ? BLACK : WHITE;
       } else {
         return "draw";
       }
     } else {
-      return null;
+      return false;
     }
+  }
+  get enPassant() {
+    const enPassant = this.fenEnPassant;
+    return enPassant === "-" ? null : enPassant;
   }
   set enPassant(value) {
     if (value === "-") {
@@ -1712,7 +1722,7 @@ class TranspositionTable {
   }
 }
 class ChessAI {
-  constructor({ type = "normal", depth = 1 }) {
+  constructor(type = "normal", depth = 1) {
     __publicField(this, "positionCount", 0);
     __publicField(this, "cutOff", 0);
     __publicField(this, "quiesceCount", 0);
@@ -1726,7 +1736,6 @@ class ChessAI {
   selectMove(fen, options) {
     const type = (options == null ? void 0 : options.type) || this.type;
     const depth = (options == null ? void 0 : options.depth) || this.depth;
-    console.log(depth);
     if (fen)
       this.game = new ChessGame(fen);
     else
@@ -1740,6 +1749,7 @@ class ChessAI {
       this.search(depth, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY, this.game);
       if (options == null ? void 0 : options.debug)
         this.logDebug();
+      this.bestMove.setSAN(this.game.uglyMoves);
       return this.bestMove.pretty;
     }
   }

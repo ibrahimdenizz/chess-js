@@ -11,7 +11,7 @@ import {
   Q_SIDE_CASTLE,
   secondRowsWithColor,
   WHITE,
-} from "@/constants/chess.js";
+} from "./constants/chess.js";
 
 export default class Move {
   piece = null;
@@ -57,7 +57,7 @@ export default class Move {
   }
 
   indexToString(index) {
-    return "" + RANKS[index % 8] + (parseInt(index / 8) + 1);
+    return "" + RANKS[index % 8] + (8 - parseInt(index / 8));
   }
 
   get startPosition() {
@@ -102,7 +102,6 @@ export default class Move {
   getSanConflict(moves) {
     let conflict = "";
     const startPosition = this.startPosition;
-    const targetPosition = this.targetPosition;
     let sameRank = false,
       sameFile = false;
 
@@ -120,7 +119,7 @@ export default class Move {
     }
 
     if (sameFile) conflict += RANKS[startPosition.x];
-    if (sameRank) conflict += startPosition.y + 1;
+    if (sameRank) conflict += 8 - startPosition.y;
 
     return conflict;
   }
@@ -143,10 +142,7 @@ export default class Move {
         this.san += "x";
       }
 
-      const targetPosition = this.targetPosition;
-
-      this.san += RANKS[targetPosition.x];
-      this.san += targetPosition.y + 1;
+      this.san += this.targetString;
 
       if (this.promotion) this.san += "=" + this.promotion.toUpperCase();
     }

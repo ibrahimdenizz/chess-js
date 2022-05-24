@@ -11,7 +11,7 @@ import {
   mailboxOffsets,
   mailboxKingAttackOffsets,
   pieceTypeToCode,
-} from "@/constants/chess.js";
+} from "./constants/chess.js";
 import Board from "./board.js";
 import Move from "./move.js";
 import Zobrist from "./zobrist.js";
@@ -146,8 +146,8 @@ export default class ChessGame {
 
   convertToMove(move) {
     let uglyMove;
-    if (move instanceof Move) uglyMove = move;
-    else if (typeof move === "string" || move?.san) {
+    if (move?.startIndex && move?.targetIndex) uglyMove = move;
+    else if (typeof move === "string") {
       uglyMove = this.uglyMoves.find((_uglyMove) => _uglyMove.san === move);
     } else {
       uglyMove = this.uglyMoves.find((_uglyMove) => {
@@ -172,6 +172,8 @@ export default class ChessGame {
   }
 
   makeMove(move) {
+    if (!this.validateMove(move)) return false;
+
     this.makeUglyMove(this.convertToMove(move));
     this.redoHistory = [];
     this.buildMoves();
@@ -411,7 +413,7 @@ export default class ChessGame {
     return color === WHITE ? BLACK : WHITE;
   }
 
-  get board64Arr() {
+  get boardArray() {
     return this.board.squares;
   }
 
@@ -440,14 +442,19 @@ export default class ChessGame {
 
   get winner() {
     if (this.gameOver) {
-      if (this.inCheck()) {
+      if (this.inCheck() && this.uglyMoves.length === 0) {
         return this.currentPlayer === WHITE ? BLACK : WHITE;
       } else {
         return "draw";
       }
     } else {
-      return null;
+      return false;
     }
+  }
+
+  get enPassant() {
+    const enPassant = this.fenEnPassant;
+    return enPassant === "-" ? null : enPassant;
   }
 
   set enPassant(value) {
