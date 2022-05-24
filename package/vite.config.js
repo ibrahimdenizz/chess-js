@@ -7,7 +7,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: path.resolve(__dirname, "src/index.js"),
-      name: "chessJS",
+      name: "chess-js",
       fileName: (format) => `${format}.js`,
     },
   },

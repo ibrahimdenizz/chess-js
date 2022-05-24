@@ -145,15 +145,15 @@ export default class ChessGame {
   }
 
   convertToMove(move) {
-    let uglyMove;
+    let uglyMove = false;
     if (move?.startIndex && move?.targetIndex) uglyMove = move;
     else if (typeof move === "string") {
       uglyMove = this.uglyMoves.find((_uglyMove) => _uglyMove.san === move);
     } else {
       uglyMove = this.uglyMoves.find((_uglyMove) => {
         if (
-          move.from === _uglyMove.startString &&
-          move.to === _uglyMove.targetString
+          move?.from === _uglyMove.startString &&
+          move?.to === _uglyMove.targetString
         ) {
           if (_uglyMove.promotion) {
             return _uglyMove.promotion === move.promotion;

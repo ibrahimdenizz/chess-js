@@ -34,11 +34,10 @@ export default class ChessAI {
     if (fen) this.game = new ChessGame(fen);
     else return null;
 
-    if (type === "random") return this.selectRandomMove(game.uglyMoves);
+    if (type === "random") return this.selectRandomMove(this.game.uglyMoves);
 
     if (type === "normal") {
       if (options?.debug) this.resetDebug();
-
       this.bestMove = null;
       this.search(
         depth,

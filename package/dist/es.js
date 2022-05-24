@@ -1371,14 +1371,14 @@ class ChessGame {
       this.halfMoveCount++;
   }
   convertToMove(move) {
-    let uglyMove;
+    let uglyMove = false;
     if ((move == null ? void 0 : move.startIndex) && (move == null ? void 0 : move.targetIndex))
       uglyMove = move;
     else if (typeof move === "string") {
       uglyMove = this.uglyMoves.find((_uglyMove) => _uglyMove.san === move);
     } else {
       uglyMove = this.uglyMoves.find((_uglyMove) => {
-        if (move.from === _uglyMove.startString && move.to === _uglyMove.targetString) {
+        if ((move == null ? void 0 : move.from) === _uglyMove.startString && (move == null ? void 0 : move.to) === _uglyMove.targetString) {
           if (_uglyMove.promotion) {
             return _uglyMove.promotion === move.promotion;
           }
@@ -1682,9 +1682,9 @@ class ChessGame {
   }
 }
 class TranspositionTable {
-  constructor(game2) {
+  constructor(game) {
     __publicField(this, "hashes", {});
-    this.game = game2;
+    this.game = game;
   }
   get hash() {
     return this.game.zobrist.hash;
@@ -1692,18 +1692,18 @@ class TranspositionTable {
   clear() {
     this.hashes = {};
   }
-  getHash(game2) {
-    if (game2)
-      return game2.zobrist.hash;
+  getHash(game) {
+    if (game)
+      return game.zobrist.hash;
     else
       return this.hash;
   }
-  getMove(game2 = null) {
-    const hash = this.getHash(game2);
+  getMove(game = null) {
+    const hash = this.getHash(game);
     return entries[hash].move;
   }
-  getStoredHash({ depth, alpha, beta }, game2 = null) {
-    const hash = this.getHash(game2);
+  getStoredHash({ depth, alpha, beta }, game = null) {
+    const hash = this.getHash(game);
     const storedHash = this.hashes[hash];
     if (storedHash && depth <= storedHash.depth) {
       if (storedHash.type === TT_EXACT)
@@ -1715,8 +1715,8 @@ class TranspositionTable {
     }
     return null;
   }
-  addEvaluation(newHash, game2 = null) {
-    const hash = this.getHash(game2);
+  addEvaluation(newHash, game = null) {
+    const hash = this.getHash(game);
     newHash.hash = hash;
     this.hashes[hash] = newHash;
   }
@@ -1741,10 +1741,11 @@ class ChessAI {
     else
       return null;
     if (type === "random")
-      return this.selectRandomMove(game.uglyMoves);
+      return this.selectRandomMove(this.game.uglyMoves);
     if (type === "normal") {
       if (options == null ? void 0 : options.debug)
         this.resetDebug();
+      console.log(this.game.fen);
       this.bestMove = null;
       this.search(depth, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY, this.game);
       if (options == null ? void 0 : options.debug)
@@ -1771,14 +1772,14 @@ class ChessAI {
   selectRandomMove(moves) {
     return moves[Math.floor(Math.random() * moves.length)];
   }
-  search(depth, alpha, beta, game2, root = 0) {
-    if (root > 0 && game2.hashHistory.includes(game2.zobrist.hash))
+  search(depth, alpha, beta, game, root = 0) {
+    if (root > 0 && game.hashHistory.includes(game.zobrist.hash))
       return 0;
     const storedHash = this.transpositionTable.getStoredHash({
       depth,
       alpha,
       beta
-    }, game2);
+    }, game);
     if (storedHash !== null) {
       this.transpositionNum++;
       if (root === 0)
@@ -1787,11 +1788,11 @@ class ChessAI {
     }
     if (depth === 0) {
       this.positionCount++;
-      return this.quiesce(alpha, beta, game2);
+      return this.quiesce(alpha, beta, game);
     }
-    const moves = game2.generateMoves();
+    const moves = game.generateMoves();
     if (moves.length === 0) {
-      if (game2.inCheck()) {
+      if (game.inCheck()) {
         return Number.NEGATIVE_INFINITY;
       }
       return 0;
@@ -1800,9 +1801,9 @@ class ChessAI {
     let bestMove;
     moves.sort((a, b) => b.score - a.score);
     for (const move of moves) {
-      game2.makeUglyMove(move);
-      let evaluation = -this.search(depth - 1, -beta, -alpha, game2, root + 1);
-      game2.undoUglyMove();
+      game.makeUglyMove(move);
+      let evaluation = -this.search(depth - 1, -beta, -alpha, game, root + 1);
+      game.undoUglyMove();
       if (evaluation >= beta) {
         this.cutOff++;
         this.transpositionTable.addEvaluation({
@@ -1810,7 +1811,7 @@ class ChessAI {
           move,
           score: beta,
           type: TT_LOWER
-        }, game2);
+        }, game);
         return beta;
       }
       if (evaluation > alpha) {
@@ -1828,22 +1829,22 @@ class ChessAI {
       move: bestMove,
       score: alpha,
       type: tt_type
-    }, game2);
+    }, game);
     return alpha;
   }
-  quiesce(alpha, beta, game2) {
+  quiesce(alpha, beta, game) {
     this.quiesceCount++;
-    const stand_pat = this.evaluate(game2);
+    const stand_pat = this.evaluate(game);
     if (stand_pat >= beta)
       return beta;
     if (alpha < stand_pat)
       alpha = stand_pat;
-    const captureMoves = game2.generateMoves({ onlyCapture: true });
+    const captureMoves = game.generateMoves({ onlyCapture: true });
     captureMoves.sort((a, b) => b.score - a.score);
     for (const move of captureMoves) {
-      game2.makeUglyMove(move);
-      const score = -this.quiesce(-beta, -alpha, game2);
-      game2.undoUglyMove();
+      game.makeUglyMove(move);
+      const score = -this.quiesce(-beta, -alpha, game);
+      game.undoUglyMove();
       if (score >= beta)
         return beta;
       if (score > alpha)
@@ -1869,8 +1870,8 @@ class ChessAI {
     return evaluation * 10 * endGameWeight;
   }
   evaluate(_game) {
-    const game2 = this.game || _game;
-    const board = game2.board;
+    const game = this.game || _game;
+    const board = game.board;
     const kings = board.kings;
     let whiteEval = 0;
     let blackEval = 0;
@@ -1886,7 +1887,7 @@ class ChessAI {
     blackEval += this.endGameEval(kings.black, kings.white, blackNotPawnMaterial, blackEndGameWeight);
     whiteEval += this.getPieceWeights(WHITE, whiteNotPawnMaterial, board);
     blackEval += this.getPieceWeights(BLACK, blackNotPawnMaterial, board);
-    return (whiteEval - blackEval) * Coefficients[game2.currentPlayer];
+    return (whiteEval - blackEval) * Coefficients[game.currentPlayer];
   }
   getColorMaterial(color, board) {
     let colorEval = 0;
