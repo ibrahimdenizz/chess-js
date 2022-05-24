@@ -1745,7 +1745,6 @@ class ChessAI {
     if (type === "normal") {
       if (options == null ? void 0 : options.debug)
         this.resetDebug();
-      console.log(this.game.fen);
       this.bestMove = null;
       this.search(depth, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY, this.game);
       if (options == null ? void 0 : options.debug)

@@ -87,7 +87,6 @@ export default {
       this.chessBoardSize = width > height ? height * ratio : width * ratio;
     },
     onMovePlayed({ move, game }) {
-      console.log(move);
       game.makeMove(move);
       if (this.gameType !== "two-player") this.makeAiMove(game);
     },

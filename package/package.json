@@ -1,7 +1,7 @@
 {
   "name": "@ibrahimdeniz/chess-js",
   "description": "Javascript chess library for chess rules and chess ai.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "İbrahim Deniz",
     "email": "dnzibrahim1@gmail.com"
